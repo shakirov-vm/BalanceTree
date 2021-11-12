@@ -22,6 +22,13 @@ namespace avl_tree {
 	}
 
 	void print_graph(Node* node, FILE* potok) {// So slooow
+		//printf(">>> %d, %d, %d and key - %d\n", node->height_, node->height(), node->balance_factor(), node->key_);
+		printf("Node - %d, ", node->key_);
+		if (node->parent_ != nullptr) printf("parent - %d, ", node->parent_->key_);
+		if (node->left_ != nullptr) printf("left - %d, ", node->left_->key_);
+		if (node->right_ != nullptr) printf("right - %d, ", node->right_->key_);
+		printf("BF - %d", node->balance_factor());
+		printf("\n");
 
 		if (node->left_ != nullptr) {
 			fprintf(potok, "\"%d", node->key_);
@@ -37,6 +44,14 @@ namespace avl_tree {
 			fprintf(potok, "\";\n");
 
 			print_graph(node->right_, potok);
+		}
+
+		if (node->parent_ != nullptr) {
+			fprintf(potok, "\"%d", node->key_);
+			fprintf(potok, "\" -> \"%d", node->parent_->key_);
+			fprintf(potok, "\";\n");
+
+			//print_graph(node->right_, potok);
 		}
 	}
 
