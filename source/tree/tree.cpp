@@ -20,6 +20,7 @@ namespace avl_tree {
 				iter = new Node{ key, nullptr, nullptr, parent };
 				if (parent->key_ > iter->key_) parent->left_ = iter;
 				if (parent->key_ < iter->key_) parent->right_ = iter;
+				iter->dump();
 				break;
 			}
 			if (iter->key_ > key) {
