@@ -3,7 +3,8 @@
 #include "tree/tree.h"
 
 int main() {
-	avl_tree::AVLTree our_tree(100);
+	printf("We in\n");
+	avl_tree::AVLTree our_tree(10);
 
 	/*printf("we create\n");
 	if (!our_tree.insert(5)) printf("Dont push 5\n");
@@ -23,63 +24,53 @@ int main() {
 	our_tree.dump();*/
 
 	printf("we create\n");
-	our_tree.insert(our_tree.top_, 5);
+	//our_tree.insert(10);
+	our_tree.insert(20);
+	our_tree.insert(5);
+	our_tree.insert(3);
+	our_tree.insert(6);
+	our_tree.insert(2);
+	our_tree.insert(1);
+
+	our_tree.insert(7);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 7);
+	our_tree.insert(23);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 23);
+	our_tree.insert(4);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 1);
+	our_tree.insert(18);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 4);
+	our_tree.insert(13);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 18);
+	our_tree.insert(58);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 13);
-	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 58);
-	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 8);
+	our_tree.insert(8);
 	//our_tree.dump(); 
-	our_tree.insert(our_tree.top_, 2);
+	our_tree.insert(2);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 23);
+	our_tree.insert(16);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 42);
+	our_tree.insert(99);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 27);
+	our_tree.insert(87);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 16);
+	our_tree.insert(32);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 99);
+	our_tree.insert(19);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 87);
+	our_tree.insert(11);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 32);
+	our_tree.insert(33);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 19);
-	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 11);
-	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 33);
-	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 43);
+	our_tree.insert(43);
 	//our_tree.dump(); 
-	our_tree.insert(our_tree.top_, 37);
+	our_tree.insert(37);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 26);
+	our_tree.insert(26);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 42);
+	our_tree.insert(42);
 	//our_tree.dump();
-	our_tree.insert(our_tree.top_, 9);
+	our_tree.insert(9);
 	printf("All insert do\n");
 	our_tree.dump();
 }
-
-/*
-void recPreOrder(Node* node) {
-	printf("key: %d, left - %p, right - %p\n", node->key_, node->left_, node->right_);
-	if (node->left_ != nullptr) recPreOrder(node->left_);
-	if (node->right_ != nullptr) recPreOrder(node->right_);
-}
-*/
