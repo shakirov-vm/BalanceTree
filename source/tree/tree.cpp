@@ -1,9 +1,95 @@
 #include <cstdio>
+#include <stack>
 
 #include "tree.h"
 
 namespace avl_tree {
 
+	AVLTree::~AVLTree() {
+		printf("WE DELETE %p\n", this);
+		std::stack<Node*> stk;
+		Node* last_node = nullptr;
+		Node* stk_top = nullptr;
+		Node* iter = top_;
+
+		while (stk.size() != 0 || iter != nullptr) {
+			if (iter != nullptr) {
+				stk.push(iter);
+				iter = iter->left_;
+			}
+			else {
+				stk_top = stk.top();
+				if ((stk_top->right_ != nullptr) && (last_node != stk_top->right_)) {
+					iter = stk_top->right_;
+				}
+				else {
+					stk.pop();
+					printf("visited %d\n", stk_top->key_);
+					if (iter != nullptr) printf("iter is %d ", iter->key_);
+					if (last_node != nullptr) printf("last_node is %d ", last_node->key_);
+					if (stk_top != nullptr) printf("stk_top is %d ", stk_top->key_);
+					printf("\n");
+					if (last_node != nullptr) printf("we DELETE %d\n", last_node->key_);
+					delete last_node;
+					last_node = stk_top;
+				}
+			}
+			if (iter != nullptr) printf("iter is %d ", iter->key_);
+			if (last_node != nullptr) printf("last_node is %d ", last_node->key_);
+			if (stk_top != nullptr) printf("stk_top is %d ", stk_top->key_);
+			printf("\n");
+		}
+		if (last_node != nullptr) printf("we DELETE %d\n", last_node->key_);
+		delete last_node;
+	}
+
+	AVLTree::AVLTree(const AVLTree& other) {
+		
+		Node* iter = other.top_;
+		//top_ = new Node(other.top_->key_, nullptr, nullptr, nullptr, other.top_->left_size_, other.top_->right_size_, other.top_->height_);
+		Node* parent = nullptr;
+		Node* clone = nullptr;
+		//Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, int left_size = 0, int right_size = 0, int height = 1) :
+		
+		std::stack<Node*> stk;
+		while (stk.size() != 0 || iter != nullptr) {
+			if (iter != nullptr) {
+				parent = clone;
+				//printf("ITER IS %d\n", iter->key_);
+				clone = new Node(iter->key_, nullptr, nullptr, nullptr, iter->left_size_, iter->right_size_, iter->height_);
+				//printf("Clone is %d\n", clone->key_);
+				clone->parent_ = parent;
+				if (parent != nullptr) {
+					if (parent != nullptr && parent->parent_ != nullptr) {
+						printf("WE Up, parent - %d, parent-parent - %d\n", parent->key_, parent->parent_->key_);
+						parent = parent->parent_;
+					}
+					if (clone->key_ < parent->key_) parent->left_ = clone;
+					if (clone->key_ > parent->key_) parent->right_ = clone;
+
+				}
+				printf("visited %d\n", iter->key_);
+				if (iter->right_ != nullptr) {
+					stk.push(iter->right_);
+				}
+				iter = iter->left_;
+			}
+			else {
+				iter = stk.top();
+				stk.pop();
+
+			}
+			if (iter != nullptr) printf("iter is %d ", iter->key_);
+			if (clone != nullptr) printf("clone is %d ", clone->key_);
+			if (parent != nullptr) printf("parent is %d ", parent->key_);
+			printf("\n");
+		}
+		printf("\n\n\nClone is %d\n", clone->key_);
+		while (clone->parent_ != nullptr) clone = clone->parent_;
+		top_ = clone;
+		printf("Clone is %d\n", clone->key_);
+	}
+	
 	bool AVLTree::insert(key_t key) {
 
 		if (top_ == nullptr) {

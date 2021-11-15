@@ -4,6 +4,18 @@
 
 int main() {
 	printf("We in\n");
+	avl_tree::AVLTree our_tree(4);
+
+	printf("we create\n");
+	our_tree.insert(2);
+	our_tree.insert(1);
+	our_tree.insert(3);
+	our_tree.insert(6);
+	our_tree.insert(5);
+	our_tree.insert(7);
+
+
+	/*printf("We in\n");
 	avl_tree::AVLTree our_tree(10);
 
 	printf("we create\n");
@@ -52,5 +64,9 @@ int main() {
 	//our_tree.dump();
 	our_tree.insert(9);
 	printf("All insert do\n");
-	our_tree.dump();
+	our_tree.dump();*/
+	printf("\n\n\n\n\n");
+	avl_tree::AVLTree second_tree(our_tree);
+	//second_tree.insert(70);
+	second_tree.dump();
 }
