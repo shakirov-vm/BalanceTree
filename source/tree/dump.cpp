@@ -15,6 +15,7 @@ namespace avl_tree {
 		char answer[MAX_NAME_SIZE] = {};
 
 		fseek(stdin, 0, SEEK_END);
+
 		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 
 		std::ofstream potok;
@@ -30,7 +31,7 @@ namespace avl_tree {
 	}
 
 	void print_graph(Node* node, std::ofstream& potok) {// So slooow
-	
+
 		if (node->left_ != nullptr) {
 			potok << "\"" << node->key_;
 			potok << "\" -> \"" << node->left_->key_;

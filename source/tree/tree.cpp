@@ -1,46 +1,59 @@
 #include <cstdio>
 #include <stack>
+#include <iostream>
 
 #include "tree.h"
 
 namespace avl_tree {
 
 	AVLTree::~AVLTree() {
-		printf("WE DELETE %p\n", this);
-		std::stack<Node*> stk;
-		Node* last_node = nullptr;
-		Node* stk_top = nullptr;
+		Node* side; //How do poison?
 		Node* iter = top_;
 
-		while (stk.size() != 0 || iter != nullptr) {
-			if (iter != nullptr) {
-				stk.push(iter);
-				iter = iter->left_;
+		printf("Start delete\n");
+		while (side != top_) {
+			if (side == iter->right_) {
+
+				printf("delete %ld\n", side->key_);
+				delete side;
+				side = iter;
+				iter = iter->parent_;
+				continue;
 			}
-			else {
-				stk_top = stk.top();
-				if ((stk_top->right_ != nullptr) && (last_node != stk_top->right_)) {
-					iter = stk_top->right_;
+			if (iter->left_ != nullptr && iter->left_ != side) { 
+
+				iter = iter->left_;
+				continue;
+			}
+			if (iter->left_ == nullptr) {
+			
+				if (iter->right_ != nullptr) {
+					iter = iter->right_;
+					continue;
+				}
+				side = iter;
+				iter = iter->parent_;
+				continue;
+			}
+			if (side == iter->left_) {
+				
+				if (iter->right_ != nullptr) {
+					printf("delete %ld\n", side->key_);
+					delete side;
+					iter = iter->right_;
+					continue;
 				}
 				else {
-					stk.pop();
-					printf("visited %d\n", stk_top->key_);
-					if (iter != nullptr) printf("iter is %d ", iter->key_);
-					if (last_node != nullptr) printf("last_node is %d ", last_node->key_);
-					if (stk_top != nullptr) printf("stk_top is %d ", stk_top->key_);
-					printf("\n");
-					if (last_node != nullptr) printf("we DELETE %d\n", last_node->key_);
-					delete last_node;
-					last_node = stk_top;
+					printf("delete %ld\n", side->key_);
+					delete side;
+					side = iter;
+					iter = iter->parent_;
+					continue;
 				}
 			}
-			if (iter != nullptr) printf("iter is %d ", iter->key_);
-			if (last_node != nullptr) printf("last_node is %d ", last_node->key_);
-			if (stk_top != nullptr) printf("stk_top is %d ", stk_top->key_);
-			printf("\n");
 		}
-		if (last_node != nullptr) printf("we DELETE %d\n", last_node->key_);
-		delete last_node;
+		printf("delete %ld\n", side->key_);
+		delete side;
 	}
 
 	AVLTree::AVLTree(const AVLTree& other) {
@@ -124,9 +137,13 @@ namespace avl_tree {
 		}
 
 		while (iter->parent_ != nullptr) { 
+			printf("iter is %ld\n", iter->key_);
 			iter = iter->balance(); 
 			iter = iter->parent_;
 		}
+
+		top_ = top_->balance();
+		
 		while (top_->parent_ != nullptr) {
 			top_ = top_->parent_;
 		}
