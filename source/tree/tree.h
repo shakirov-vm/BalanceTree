@@ -50,7 +50,6 @@ namespace avl_tree {
 	class AVLTree {
 		Node* top_;
 
-
 	public:
 
 		AVLTree(key_t key = 0) {

@@ -23,5 +23,8 @@ int main() {
 	//printf("%ld, %d\n", our_tree.top_->left_->key_, our_tree.top_->right_->left_->key_);
 
 	our_tree.dump();
+	std::cout << "Before copy" << std::endl;
+	avl_tree::AVLTree copy_tree(our_tree);
+	copy_tree.dump();
 
 }
