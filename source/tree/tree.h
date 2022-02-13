@@ -53,8 +53,12 @@ namespace avl_tree {
 		AVLTree(key_t key = 0) {
 			top_ = new Node(key);
 		}
-		~AVLTree();
 		AVLTree(const AVLTree& other);
+		AVLTree(AVLTree&& tmp);
+		AVLTree& operator= (const AVLTree& other);
+		AVLTree& operator= (AVLTree&& tmp);
+		~AVLTree();
+		
 		bool insert(key_t key);
 		size_t find_k_ordinal_stat(size_t k);
 		size_t find_num_less_that_k(size_t k);

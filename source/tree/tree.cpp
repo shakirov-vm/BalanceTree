@@ -113,6 +113,68 @@ namespace avl_tree {
 			}
 		}
 	}
+
+	AVLTree& AVLTree::operator= (const AVLTree& other) {
+
+	    if (this == &other) {
+	        return *this;
+	    }
+
+	    if (other.top_ != nullptr) {
+
+		    Node* side; //How do poison?
+			Node* iter = other.top_;
+
+			Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
+			top_ = iter_new;
+
+			while (side != other.top_) {
+
+				if (side == iter->right_) {
+					side = iter;
+					iter = iter->parent_;
+					iter_new = iter_new->parent_;
+					continue;
+				}
+				if (iter->left_ != nullptr && iter->left_ != side) {
+					iter = iter->left_;
+					iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+					iter_new = iter_new->left_;
+					continue;
+				}
+				if (iter->left_ == nullptr) {
+				
+					if (iter->right_ != nullptr) {
+						iter = iter->right_;
+						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+						iter_new = iter_new->right_;
+						continue;
+					}
+					side = iter;
+					iter = iter->parent_;
+					iter_new = iter_new->parent_;
+					continue;
+				}
+				if (side == iter->left_) {
+					
+					if (iter->right_ != nullptr) {
+						iter = iter->right_;
+						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+						iter_new = iter_new->right_;
+						continue;
+					}
+					else {
+						side = iter;
+						iter = iter->parent_;
+						iter_new = iter_new->parent_;
+						continue;
+					}
+				}
+			}
+	    }
+
+	    return *this;
+	}
 	
 	bool AVLTree::insert(key_t key) {
 
@@ -162,6 +224,19 @@ namespace avl_tree {
 		}
 
 		return true;
+	}
+
+	AVLTree::AVLTree(AVLTree&& tmp) {
+	    std::swap(top_, tmp.top_);
+	}
+
+	AVLTree& AVLTree::operator= (AVLTree&& tmp) {
+	    
+	    if (this == &tmp) {
+	        return *this;
+	    }
+	    std::swap(top_, tmp.top_);
+	    return *this;
 	}
 
 	size_t AVLTree::find_k_ordinal_stat(size_t k) {

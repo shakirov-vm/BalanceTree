@@ -34,6 +34,9 @@ our_tree.dump();
 	size_t a = our_tree.find_k_ordinal_stat(3);
 	std::cout << "third it is " << a << std::endl;
 
+	a = our_tree.find_k_ordinal_stat(4);
+	std::cout << "forth it is " << a << std::endl;
+
 	a = our_tree.find_k_ordinal_stat(7);
 	std::cout << "seventh it is " << a << std::endl;
 
@@ -55,4 +58,6 @@ our_tree.dump();
 	a = our_tree.find_num_less_that_k(111);
 	std::cout << "less than 111 is " << a << std::endl;
 
+	avl_tree::AVLTree copy_tree = our_tree;
+	copy_tree.dump();
 }
