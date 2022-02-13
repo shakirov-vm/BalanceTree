@@ -33,26 +33,26 @@ namespace avl_tree {
 	void print_graph(Node* node, std::ofstream& potok) {// So slooow
 
 		if (node->left_ != nullptr) {
-			potok << "\"" << node->key_;
+			potok << "\"" << node->key_ << "-" << node->left_size_;
 			potok << "\" -> \"" << node->left_->key_;
-			potok << "\";\n";
+			potok << "-" << node->left_->left_size_ << "\";\n";
 
 			print_graph(node->left_, potok);
 		}
 
 		if (node->right_ != nullptr) {
-			potok << "\"" << node->key_;
+			potok << "\"" << node->key_ << "-" << node->left_size_;
 			potok << "\" -> \"" << node->right_->key_;
-			potok << "\";\n";
+			potok << "-" << node->right_->left_size_ << "\";\n";
 
 			print_graph(node->right_, potok);
 		}
 
-		if (node->parent_ != nullptr) {
+		/*if (node->parent_ != nullptr) {
 			potok << "\"" << node->key_;
 			potok << "\" -> \"" << node->parent_->key_;
 			potok << "\";\n";
-		}
+		}*/
 	}
 
 }

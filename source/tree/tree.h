@@ -13,17 +13,15 @@ namespace avl_tree {
 		Node* parent_;
 
 		int left_size_;
-		int right_size_;
 
 		int height_;
 
-		Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, int left_size = 0, int right_size = 0, int height = 1) :
+		Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, int left_size = 0, int height = 1) :
 			key_(key),
 			left_(left),
 			right_(right),
 			parent_(parent),
 			left_size_(left_size),
-			right_size_(right_size),
 			height_(height) {}
 
 		void dump() {
@@ -58,6 +56,8 @@ namespace avl_tree {
 		~AVLTree();
 		AVLTree(const AVLTree& other);
 		bool insert(key_t key);
+		size_t find_k_ordinal_stat(size_t k);
+		size_t find_num_less_that_k(size_t k);
 		void dump();
 
 	};
