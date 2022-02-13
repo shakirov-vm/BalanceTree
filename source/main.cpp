@@ -2,62 +2,119 @@
 #include <iostream>
 #include "tree/tree.h"
 
-int main() {
-	printf("We in\n\n");
+#define DEBUG 0
 
-	avl_tree::AVLTree our_tree(4);
+bool YourTest(std::string& input);
+bool E2ETest(std::string& input, std::string& answer);
 
-	printf("we create\n");
+int main(int argc, char** argv) {
 
-	/*our_tree.insert(5);
-	our_tree.insert(4);
-	our_tree.insert(3);
-	our_tree.insert(2);
-	our_tree.insert(1);*/
-	our_tree.insert(2);
-	our_tree.insert(1);
-	our_tree.insert(15);
-	our_tree.insert(8);
-	our_tree.insert(12);
-	our_tree.insert(3);
-	our_tree.insert(6);
-	our_tree.insert(14);
-	our_tree.insert(5);
-	our_tree.insert(7);
-	//printf("%ld, %d\n", our_tree.top_->left_->key_, our_tree.top_->right_->left_->key_);
+	if (argc == 2) {
+		std::string input = std::string(argv[1]);
 
-	/*our_tree.dump();
-	std::cout << "Before copy" << std::endl;
-	avl_tree::AVLTree copy_tree(our_tree);
-	copy_tree.dump();*/
-our_tree.dump();
-	size_t a = our_tree.find_k_ordinal_stat(3);
-	std::cout << "third it is " << a << std::endl;
+		if (YourTest(input)) return 0;
+		return 1;
+	}
 
-	a = our_tree.find_k_ordinal_stat(4);
-	std::cout << "forth it is " << a << std::endl;
+	if (argc == 3) {
+		std::string input = std::string(argv[1]);
+		std::string answer = std::string(argv[2]);
 
-	a = our_tree.find_k_ordinal_stat(7);
-	std::cout << "seventh it is " << a << std::endl;
+		if (E2ETest(input, answer)) {
+			if (DEBUG) printf("OK Test\n");
+			return 0;
+		}
+		if (DEBUG) printf("Failed Test\n");
+		return 1;
+	}
+}
 
-	a = our_tree.find_k_ordinal_stat(10);
-	std::cout << "tenth it is " << a << std::endl;
+bool YourTest(std::string& input) { 
+        
+    std::ifstream input_potok(input);
 
-	a = our_tree.find_k_ordinal_stat(13);
-	std::cout << "thirteenth it is " << a << std::endl;
+  	avl_tree::AVLTree test_tree;
 
-	a = our_tree.find_num_less_that_k(6);
-	std::cout << "less than 6 is " << a << std::endl;
+    if (input_potok.is_open()) {
 
-	a = our_tree.find_num_less_that_k(11);
-	std::cout << "less than 11 is " << a << std::endl;
+    	std::string action;
+    	size_t num;
+    	size_t result;
 
-	a = our_tree.find_num_less_that_k(13);
-	std::cout << "less than 13 is " << a << std::endl;
+    	while (!input_potok.eof()) {
 
-	a = our_tree.find_num_less_that_k(111);
-	std::cout << "less than 111 is " << a << std::endl;
+    		input_potok >> action >> num;
 
-	avl_tree::AVLTree copy_tree = our_tree;
-	copy_tree.dump();
+    		if (action == static_cast<std::string>("k")) test_tree.insert(num);
+    		if (action == static_cast<std::string>("m")) {
+    			result = test_tree.find_k_ordinal_stat(num);
+    			if (result == 0xDEADBEEF) std::cout << "we haven't " << num << " elements in thee" << std::endl;
+    			else std::cout << num << " ordinal statistics is " << result << std::endl;
+    		}
+    		if (action == static_cast<std::string>("n")) { 
+    			result = test_tree.find_num_less_that_k(num);
+    			std::cout << "less than " << num << " element is " << result << std::endl;
+    		}
+    	}
+    	test_tree.dump();
+
+    	input_potok.close();
+        return true;
+    }
+
+    std::cout << "File [" << input << "] can't be open. Test failed\n";
+    return false;
+}
+
+bool E2ETest(std::string& input, std::string& answer) { 
+        
+    std::ifstream input_potok(input);
+    std::ifstream answer_potok(answer);
+
+	avl_tree::AVLTree test_tree;
+
+    if (input_potok.is_open() && answer_potok.is_open()) {
+
+    	std::string action;
+    	size_t num;
+    	size_t result;
+    	size_t answer;
+    	size_t err = 0;
+
+    	while (!input_potok.eof()) {
+
+    		input_potok >> action >> num;
+
+    		if (action == static_cast<std::string>("k")) test_tree.insert(num);
+    		if (action == static_cast<std::string>("m")) {
+    			answer_potok >> answer;
+    			result = test_tree.find_k_ordinal_stat(num);
+    			if (result != answer) {
+    				std::cout << "Ord_stat: answer is " << answer << " result is " << result << std::endl;
+    				err++;
+    			}
+			}
+    		if (action == static_cast<std::string>("n")) { 
+    			answer_potok >> answer;
+    			result = test_tree.find_num_less_that_k(num);
+    			if (result != answer) {
+    				std::cout << "Less_tht: answer is " << answer << " result is " << result << std::endl;
+    				err++;
+    			}
+    		}
+    	}
+
+    	if (err > 0) {
+    		std::cout << "Test failed" << std::endl;
+    		return false;
+    	}
+    	else std::cout << "Test success" << std::endl;
+
+    	input_potok.close();
+        answer_potok.close();
+        return true;
+    }
+
+    std::cout << "File [" << input << "] or [" << answer << "] can't be open. Test failed\n";
+    return false;
 }
