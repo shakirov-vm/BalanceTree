@@ -13,7 +13,6 @@ namespace avl_tree {
 		Node* parent_;
 
 		int left_size_;
-
 		int height_;
 
 		Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, int left_size = 0, int height = 1) :
@@ -50,7 +49,7 @@ namespace avl_tree {
 
 	public:
 
-		AVLTree() : top_(nullptr) {}
+		AVLTree() : top_(nullptr) {} //Want we have this function?
 		AVLTree(key_t key) {
 			top_ = new Node(key);
 		}
@@ -68,6 +67,5 @@ namespace avl_tree {
 	};
 
 	void print_graph(Node* node, std::ofstream& potok);
-
 }
 

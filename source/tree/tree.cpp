@@ -9,7 +9,7 @@ namespace avl_tree {
 	AVLTree::~AVLTree() {
 		if (top_ == nullptr) return;
 
-		Node* side; //How do poison?
+		Node* side = nullptr; //How do poison like 0x00000001? static_cast don't work
 		Node* iter = top_;
 
 		while (side != top_) {
@@ -59,7 +59,7 @@ namespace avl_tree {
 			return;
 		} 
 
-		Node* side; //How do poison?
+		Node* side = nullptr; 
 		Node* iter = other.top_;
 
 		Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
@@ -118,7 +118,7 @@ namespace avl_tree {
 
 	    if (other.top_ != nullptr) {
 
-		    Node* side; //How do poison?
+		    Node* side = nullptr; 
 			Node* iter = other.top_;
 
 			Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
@@ -171,7 +171,20 @@ namespace avl_tree {
 
 	    return *this;
 	}
-	
+
+	AVLTree::AVLTree(AVLTree&& tmp) {
+	    std::swap(top_, tmp.top_);
+	}
+
+	AVLTree& AVLTree::operator= (AVLTree&& tmp) {
+	    
+	    if (this == &tmp) {
+	        return *this;
+	    }
+	    std::swap(top_, tmp.top_);
+	    return *this;
+	}
+
 	bool AVLTree::insert(key_t key) {
 
 		if (top_ == nullptr) {
@@ -200,8 +213,7 @@ namespace avl_tree {
 				return false;
 			}
 			else {
-				parent = iter;
-				// There ++ to right size				
+				parent = iter;				
 				iter = iter->right_;
 			}
 		}
@@ -220,19 +232,6 @@ namespace avl_tree {
 		return true;
 	}
 
-	AVLTree::AVLTree(AVLTree&& tmp) {
-	    std::swap(top_, tmp.top_);
-	}
-
-	AVLTree& AVLTree::operator= (AVLTree&& tmp) {
-	    
-	    if (this == &tmp) {
-	        return *this;
-	    }
-	    std::swap(top_, tmp.top_);
-	    return *this;
-	}
-
 	size_t AVLTree::find_k_ordinal_stat(size_t k) {
 	
 		if (top_ == nullptr) {
@@ -242,7 +241,7 @@ namespace avl_tree {
 
 		Node* iter = top_;
 		size_t on_the_left = iter->left_size_;
-// what's     if?
+
 		while (1) {
 
 			if (on_the_left > k - 1) {
@@ -260,7 +259,7 @@ namespace avl_tree {
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
-		return 0xDEADBEEF; // What there?		
+		return 0xDEADBEEF; 
 	}
 
 
@@ -301,11 +300,11 @@ namespace avl_tree {
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
-		return 0xDEADBEEF; // What there?
+		return 0xDEADBEEF; 
 	}
 
 	int Node::height() {
-		if (this != nullptr) return height_; //that can't be
+		if (this != nullptr) return height_; 
 		else return 0;
 	}
 

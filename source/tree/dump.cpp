@@ -30,7 +30,7 @@ namespace avl_tree {
 		potok.close();
 	}
 
-	void print_graph(Node* node, std::ofstream& potok) {// So slooow
+	void print_graph(Node* node, std::ofstream& potok) { // So slooow
 
 		if (node->left_ != nullptr) {
 			potok << "\"" << node->key_ << "-" << node->left_size_;
@@ -47,12 +47,11 @@ namespace avl_tree {
 
 			print_graph(node->right_, potok);
 		}
-
+// It's turn off because we want print left_size
 		/*if (node->parent_ != nullptr) {
 			potok << "\"" << node->key_;
 			potok << "\" -> \"" << node->parent_->key_;
 			potok << "\";\n";
 		}*/
 	}
-
 }
