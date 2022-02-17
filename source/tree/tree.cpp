@@ -9,10 +9,10 @@ namespace avl_tree {
 	AVLTree::~AVLTree() {
 		if (top_ == nullptr) return;
 
-		Node* side = nullptr; //How do poison like 0x00000001? static_cast don't work
+		Node* side = nullptr; 
 		Node* iter = top_;
 
-		while (side != top_) {
+		while (side != top_) { // if for exampleeee
 
 			if (side == iter->right_) {
 				delete side;
@@ -53,20 +53,16 @@ namespace avl_tree {
 		delete side;
 	}
 
-	AVLTree::AVLTree(const AVLTree& other) {
-		if (other.top_ == nullptr) { // bad option
-			top_ = nullptr;
-			return;
-		} 
+	AVLTree::copy(AVLTree &const other) {
 
-		Node* side = nullptr; 
+		Node* side = nullptr; // How do poison like 0x00000001? 
 		Node* iter = other.top_;
 
 		Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
 		top_ = iter_new;
 
-		while (side != other.top_) {
-
+		while (side != other.top_) { // If, for example, we want do there side != nullptr
+									 // And we want compare side with 100% invalid ptr [so first compare will always true]
 			if (side == iter->right_) {
 				side = iter;
 				iter = iter->parent_;
@@ -107,7 +103,16 @@ namespace avl_tree {
 					continue;
 				}
 			}
-		}
+		}	
+	}
+
+	AVLTree::AVLTree(const AVLTree& other) {
+		if (other.top_ == nullptr) { // bad option
+			top_ = nullptr;
+			return;
+		} 
+
+
 	}
 
 	AVLTree& AVLTree::operator= (const AVLTree& other) {

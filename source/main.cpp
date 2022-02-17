@@ -45,13 +45,13 @@ bool YourTest(std::string& input) {
 
     		input_potok >> action >> num;
 
-    		if (action == static_cast<std::string>("k")) test_tree.insert(num);
-    		if (action == static_cast<std::string>("m")) {
+    		if (action == "k") test_tree.insert(num);
+    		if (action == "m") {
     			result = test_tree.find_k_ordinal_stat(num);
     			if (result == 0xDEADBEEF) std::cout << "we haven't " << num << " elements in thee" << std::endl;
     			else std::cout << num << " ordinal statistics is " << result << std::endl;
     		}
-    		if (action == static_cast<std::string>("n")) { 
+    		if (action == "n") { 
     			result = test_tree.find_num_less_that_k(num);
     			std::cout << "less than " << num << " element is " << result << std::endl;
     		}
@@ -85,8 +85,8 @@ bool E2ETest(std::string& input, std::string& answer) {
 
     		input_potok >> action >> num;
 
-    		if (action == static_cast<std::string>("k")) test_tree.insert(num);
-    		if (action == static_cast<std::string>("m")) {
+    		if (action == "k") test_tree.insert(num);
+    		if (action == "m") {
     			answer_potok >> answer;
     			result = test_tree.find_k_ordinal_stat(num);
     			if (result != answer) {
@@ -94,7 +94,7 @@ bool E2ETest(std::string& input, std::string& answer) {
     				err++;
     			}
 			}
-    		if (action == static_cast<std::string>("n")) { 
+    		if (action == "n") { 
     			answer_potok >> answer;
     			result = test_tree.find_num_less_that_k(num);
     			if (result != answer) {

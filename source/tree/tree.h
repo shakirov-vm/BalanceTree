@@ -47,9 +47,13 @@ namespace avl_tree {
 	class AVLTree {
 		Node* top_;
 
+	private:
+
+		void copy(AVLTree &const other, AVLTree& our);
+
 	public:
 
-		AVLTree() : top_(nullptr) {} //Want we have this function?
+		AVLTree() : top_(nullptr) {}
 		AVLTree(key_t key) {
 			top_ = new Node(key);
 		}
