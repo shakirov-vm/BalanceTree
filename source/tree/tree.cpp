@@ -1,118 +1,53 @@
 #include <cstdio>
 #include <stack>
 #include <iostream>
+#include <exception>
 
 #include "tree.h"
 
 namespace avl_tree {
 
-	AVLTree::~AVLTree() {
-		if (top_ == nullptr) return;
+	struct no_stat : std::out_of_range {
+		no_stat() {}
+		const char* what() const noexcept {
+			return "Tree contains fewer elements than k\n";
+		}
+	};
 
-		Node* side = nullptr; 
+
+	AVLTree::~AVLTree() {
+
+		std::stack<Node*> stk; // Bad if stack throw exception
+
+		Node* last_node = nullptr;
+		Node* stk_top = nullptr;
 		Node* iter = top_;
 
-		while (side != top_) { // if for exampleeee
+		while (stk.size() != 0 || iter != nullptr) {
 
-			if (side == iter->right_) {
-				delete side;
-				side = iter; 
-				iter = iter->parent_;
-				continue;
-			}
-			if (iter->left_ != nullptr && iter->left_ != side) { 
+			if (iter != nullptr) {
 
+				stk.push(iter);
 				iter = iter->left_;
-				continue;
 			}
-			if (iter->left_ == nullptr) {
-			
-				if (iter->right_ != nullptr) {
-					iter = iter->right_;
-					continue;
-				}
-				side = iter;
-				iter = iter->parent_;
-				continue;
-			}
-			if (side == iter->left_) {
-				
-				if (iter->right_ != nullptr) {
-					delete side;
-					iter = iter->right_;
-					continue;
+			else {
+
+				stk_top = stk.top();
+
+				if ((stk_top->right_ != nullptr) && (last_node != stk_top->right_)) {
+
+					iter = stk_top->right_;
 				}
 				else {
-					delete side;
-					side = iter;
-					iter = iter->parent_;
-					continue;
+
+					stk.pop();
+					delete last_node;
+					last_node = stk_top;
 				}
 			}
 		}
-		delete side;
-	}
 
-	AVLTree::copy(AVLTree &const other) {
-
-		Node* side = nullptr; // How do poison like 0x00000001? 
-		Node* iter = other.top_;
-
-		Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
-		top_ = iter_new;
-
-		while (side != other.top_) { // If, for example, we want do there side != nullptr
-									 // And we want compare side with 100% invalid ptr [so first compare will always true]
-			if (side == iter->right_) {
-				side = iter;
-				iter = iter->parent_;
-				iter_new = iter_new->parent_;
-				continue;
-			}
-			if (iter->left_ != nullptr && iter->left_ != side) {
-				iter = iter->left_;
-				iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-				iter_new = iter_new->left_;
-				continue;
-			}
-			if (iter->left_ == nullptr) {
-			
-				if (iter->right_ != nullptr) {
-					iter = iter->right_;
-					iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-					iter_new = iter_new->right_;
-					continue;
-				}
-				side = iter;
-				iter = iter->parent_;
-				iter_new = iter_new->parent_;
-				continue;
-			}
-			if (side == iter->left_) {
-				
-				if (iter->right_ != nullptr) {
-					iter = iter->right_;
-					iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-					iter_new = iter_new->right_;
-					continue;
-				}
-				else {
-					side = iter;
-					iter = iter->parent_;
-					iter_new = iter_new->parent_;
-					continue;
-				}
-			}
-		}	
-	}
-
-	AVLTree::AVLTree(const AVLTree& other) {
-		if (other.top_ == nullptr) { // bad option
-			top_ = nullptr;
-			return;
-		} 
-
-
+		delete last_node;
 	}
 
 	AVLTree& AVLTree::operator= (const AVLTree& other) {
@@ -121,60 +56,75 @@ namespace avl_tree {
 	        return *this;
 	    }
 
-	    if (other.top_ != nullptr) {
+		if (other.top_ == nullptr) { // bad option
+			top_ = nullptr;
+			return *this;
+		}
+	    else {
 
-		    Node* side = nullptr; 
-			Node* iter = other.top_;
+		    try {
 
-			Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
-			top_ = iter_new;
+			    Node* side = nullptr; // How do poison like 0x00000001? 
+				Node* iter = other.top_;
 
-			while (side != other.top_) {
+				Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
+				top_ = iter_new;
 
-				if (side == iter->right_) {
-					side = iter;
-					iter = iter->parent_;
-					iter_new = iter_new->parent_;
-					continue;
-				}
-				if (iter->left_ != nullptr && iter->left_ != side) {
-					iter = iter->left_;
-					iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-					iter_new = iter_new->left_;
-					continue;
-				}
-				if (iter->left_ == nullptr) {
-				
-					if (iter->right_ != nullptr) {
-						iter = iter->right_;
-						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-						iter_new = iter_new->right_;
-						continue;
-					}
-					side = iter;
-					iter = iter->parent_;
-					iter_new = iter_new->parent_;
-					continue;
-				}
-				if (side == iter->left_) {
-					
-					if (iter->right_ != nullptr) {
-						iter = iter->right_;
-						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-						iter_new = iter_new->right_;
-						continue;
-					}
-					else {
+				while (side != other.top_) { // If, for example, we want do there side != nullptr
+										 	 // And we want compare side with 100% invalid ptr [so first compare will always true]
+					if (side == iter->right_) {
 						side = iter;
 						iter = iter->parent_;
 						iter_new = iter_new->parent_;
 						continue;
 					}
+					if (iter->left_ != nullptr && iter->left_ != side) {
+						iter = iter->left_;
+						iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+						iter_new = iter_new->left_;
+						continue;
+					}
+					if (iter->left_ == nullptr) {
+					
+						if (iter->right_ != nullptr) {
+							iter = iter->right_;
+							iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+							iter_new = iter_new->right_;
+							continue;
+						}
+						side = iter;
+						iter = iter->parent_;
+						iter_new = iter_new->parent_;
+						continue;
+					}
+					if (side == iter->left_) {
+						
+						if (iter->right_ != nullptr) {
+							iter = iter->right_;
+							iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+							iter_new = iter_new->right_;
+							continue;
+						}
+						else {
+							side = iter;
+							iter = iter->parent_;
+							iter_new = iter_new->parent_;
+							continue;
+						}
+					}
 				}
+			}
+			catch (std::bad_alloc) {
+				~AVLTree();
+				throw;
 			}
 	    }
 
 	    return *this;
+	}
+
+	AVLTree::AVLTree(const AVLTree& other) { 
+		*this = other;
 	}
 
 	AVLTree::AVLTree(AVLTree&& tmp) {
@@ -190,7 +140,7 @@ namespace avl_tree {
 	    return *this;
 	}
 
-	bool AVLTree::insert(key_t key) {
+	bool AVLTree::insert(key_t key) { // if bad_alloc - it fly to user
 
 		if (top_ == nullptr) {
 			top_ = new Node{ key };
@@ -237,7 +187,7 @@ namespace avl_tree {
 		return true;
 	}
 
-	size_t AVLTree::find_k_ordinal_stat(size_t k) {
+	size_t AVLTree::find_k_ordinal_stat(size_t k) const {
 	
 		if (top_ == nullptr) {
 			std::cout << "Tree is empty" << std::endl;
@@ -264,11 +214,12 @@ namespace avl_tree {
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
+		throw no_stat();
 		return 0xDEADBEEF; 
 	}
 
 
-	size_t AVLTree::find_num_less_that_k(size_t k) {
+	size_t AVLTree::find_num_less_that_k(size_t k) const {
 
 		if (top_ == nullptr) {
 			std::cout << "Tree is empty" << std::endl;

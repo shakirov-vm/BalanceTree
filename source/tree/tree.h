@@ -47,10 +47,6 @@ namespace avl_tree {
 	class AVLTree {
 		Node* top_;
 
-	private:
-
-		void copy(AVLTree &const other, AVLTree& our);
-
 	public:
 
 		AVLTree() : top_(nullptr) {}
@@ -64,8 +60,8 @@ namespace avl_tree {
 		~AVLTree();
 
 		bool insert(key_t key);
-		size_t find_k_ordinal_stat(size_t k);
-		size_t find_num_less_that_k(size_t k);
+		size_t find_k_ordinal_stat(size_t k) const;
+		size_t find_num_less_that_k(size_t k) const;
 		void dump();
 
 	};
