@@ -12,10 +12,10 @@ namespace avl_tree {
 		Node* right_;
 		Node* parent_;
 
-		int left_size_;
+		size_t left_size_;
 		int height_;
 
-		Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, int left_size = 0, int height = 1) :
+		Node(key_t key = 0, Node* left = nullptr, Node* right = nullptr, Node* parent = nullptr, size_t left_size = 0, int height = 1) :
 			key_(key),
 			left_(left),
 			right_(right),
@@ -28,11 +28,11 @@ namespace avl_tree {
 				printf("node is nullptr\n");
 				return;
 			}
-			printf("node is %d ", key_);
-			if (left_ != nullptr) printf("left is %d, ", left_->key_);
-			if (right_ != nullptr) printf("right is %d, ", right_->key_);
-			if (parent_ != nullptr) printf("parent is %d, ", parent_->key_);
-			printf("\n");
+			std::cout << "node is " << key_ << ", ";
+			if (left_ != nullptr) std::cout << "left is " << left_->key_ << ", ";
+			if (right_ != nullptr) std::cout << "right is " << right_->key_ << ", ";
+			if (parent_ != nullptr) std::cout << "parent is " << parent_->key_ << ", ";
+			std::cout << std::endl;
 		}
 
 		int balance_factor();
@@ -59,8 +59,8 @@ namespace avl_tree {
 		AVLTree& operator= (AVLTree&& tmp);
 		~AVLTree();
 
-		bool insert(key_t key);
-		size_t find_k_ordinal_stat(size_t k) const;
+		void insert(key_t key);
+		key_t find_k_ordinal_stat(size_t k) const;
 		size_t find_num_less_that_k(size_t k) const;
 		void dump();
 

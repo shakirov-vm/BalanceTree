@@ -7,14 +7,6 @@
 
 namespace avl_tree {
 
-	struct no_stat : std::out_of_range {
-		no_stat() {}
-		const char* what() const noexcept {
-			return "Tree contains fewer elements than k\n";
-		}
-	};
-
-
 	AVLTree::~AVLTree() {
 
 		std::stack<Node*> stk; // Bad if stack throw exception
@@ -115,7 +107,11 @@ namespace avl_tree {
 				}
 			}
 			catch (std::bad_alloc) {
-				~AVLTree();
+				this->~AVLTree(); 
+				// Why not? We have tree in a consistent state but when bad_alloc throw out - dtor don't call -
+				// - but we want do this. Of course i can do function like "delete a subtree" and call it there
+				// but i think it is the same
+				// And - we don't want have function like "delete a subtree" because it kill our invariants
 				throw;
 			}
 	    }
@@ -140,11 +136,11 @@ namespace avl_tree {
 	    return *this;
 	}
 
-	bool AVLTree::insert(key_t key) { // if bad_alloc - it fly to user
+	void AVLTree::insert(key_t key) { // if bad_alloc - it fly to user
 
 		if (top_ == nullptr) {
 			top_ = new Node{ key };
-			return true;
+			return;
 		}
 
 		Node* iter = top_;
@@ -154,6 +150,7 @@ namespace avl_tree {
 
 			if (iter == nullptr) {
 				iter = new Node{ key, nullptr, nullptr, parent };
+			//----------------------------------------------------- Kalb Line
 				if (parent->key_ > iter->key_) parent->left_ = iter;
 				if (parent->key_ < iter->key_) parent->right_ = iter;
 				break;
@@ -165,7 +162,7 @@ namespace avl_tree {
 			}
 			else if (iter->key_ == key) {
 				printf("That key - %d is in tree!\n", key);
-				return false;
+				throw std::domain_error("That key is already in the tree\n");
 			}
 			else {
 				parent = iter;				
@@ -183,15 +180,12 @@ namespace avl_tree {
 		while (top_->parent_ != nullptr) {
 			top_ = top_->parent_;
 		}
-
-		return true;
 	}
 
-	size_t AVLTree::find_k_ordinal_stat(size_t k) const {
+	key_t AVLTree::find_k_ordinal_stat(size_t k) const {
 	
 		if (top_ == nullptr) {
-			std::cout << "Tree is empty" << std::endl;
-			return 0xDEADBEEF; // maybe -1?
+			throw std::underflow_error("Tree is empty\n");
 		}
 
 		Node* iter = top_;
@@ -214,16 +208,14 @@ namespace avl_tree {
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
-		throw no_stat();
-		return 0xDEADBEEF; 
+		throw std::out_of_range("Tree contains fewer elements than k\n");
 	}
 
 
 	size_t AVLTree::find_num_less_that_k(size_t k) const {
 
 		if (top_ == nullptr) {
-			std::cout << "Tree is empty" << std::endl;
-			return 0xDEADBEEF; // maybe -1?
+			throw std::underflow_error("Tree is empty\n");
 		}
 
 		Node* iter = top_;
@@ -234,7 +226,6 @@ namespace avl_tree {
 			if (iter->key_ > k) {
 
 				if (iter->left_ == nullptr) {
-
 					return on_the_left;
 				}
 				on_the_left -= iter->left_size_;
@@ -256,11 +247,10 @@ namespace avl_tree {
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
-		return 0xDEADBEEF; 
 	}
 
 	int Node::height() {
-		if (this != nullptr) return height_; 
+		if (this != nullptr) return height_;
 		else return 0;
 	}
 
