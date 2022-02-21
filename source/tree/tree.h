@@ -24,10 +24,7 @@ namespace avl_tree {
 			height_(height) {}
 
 		void dump() {
-			if (this == nullptr) {
-				printf("node is nullptr\n");
-				return;
-			}
+
 			std::cout << "node is " << key_ << ", ";
 			if (left_ != nullptr) std::cout << "left is " << left_->key_ << ", ";
 			if (right_ != nullptr) std::cout << "right is " << right_->key_ << ", ";
@@ -45,7 +42,12 @@ namespace avl_tree {
 	};
 
 	class AVLTree {
+		
 		Node* top_;
+
+	private:
+
+		void delete_subtree(Node* upper);
 
 	public:
 

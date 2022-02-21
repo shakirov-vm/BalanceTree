@@ -2,18 +2,19 @@
 #include <stack>
 #include <iostream>
 #include <exception>
+#include <array>
 
 #include "tree.h"
 
 namespace avl_tree {
 
-	AVLTree::~AVLTree() {
+	void AVLTree::delete_subtree(Node* upper) {
 
 		std::stack<Node*> stk; // Bad if stack throw exception
-
+//maybe do it on std::array? So we can't, it hasn't push_back
 		Node* last_node = nullptr;
 		Node* stk_top = nullptr;
-		Node* iter = top_;
+		Node* iter = upper;
 
 		while (stk.size() != 0 || iter != nullptr) {
 
@@ -42,85 +43,93 @@ namespace avl_tree {
 		delete last_node;
 	}
 
-	AVLTree& AVLTree::operator= (const AVLTree& other) {
+	AVLTree::~AVLTree() {
 
-	    if (this == &other) {
-	        return *this;
-	    }
-
-		if (other.top_ == nullptr) { // bad option
-			top_ = nullptr;
-			return *this;
-		}
-	    else {
-
-		    try {
-
-			    Node* side = nullptr; // How do poison like 0x00000001? 
-				Node* iter = other.top_;
-
-				Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
-				top_ = iter_new;
-
-				while (side != other.top_) { // If, for example, we want do there side != nullptr
-										 	 // And we want compare side with 100% invalid ptr [so first compare will always true]
-					if (side == iter->right_) {
-						side = iter;
-						iter = iter->parent_;
-						iter_new = iter_new->parent_;
-						continue;
-					}
-					if (iter->left_ != nullptr && iter->left_ != side) {
-						iter = iter->left_;
-						iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-						iter_new = iter_new->left_;
-						continue;
-					}
-					if (iter->left_ == nullptr) {
-					
-						if (iter->right_ != nullptr) {
-							iter = iter->right_;
-							iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-							iter_new = iter_new->right_;
-							continue;
-						}
-						side = iter;
-						iter = iter->parent_;
-						iter_new = iter_new->parent_;
-						continue;
-					}
-					if (side == iter->left_) {
-						
-						if (iter->right_ != nullptr) {
-							iter = iter->right_;
-							iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
-							iter_new = iter_new->right_;
-							continue;
-						}
-						else {
-							side = iter;
-							iter = iter->parent_;
-							iter_new = iter_new->parent_;
-							continue;
-						}
-					}
-				}
-			}
-			catch (std::bad_alloc) {
-				this->~AVLTree(); 
-				// Why not? We have tree in a consistent state but when bad_alloc throw out - dtor don't call -
-				// - but we want do this. Of course i can do function like "delete a subtree" and call it there
-				// but i think it is the same
-				// And - we don't want have function like "delete a subtree" because it kill our invariants
-				throw;
-			}
-	    }
-
-	    return *this;
+		delete_subtree(top_);
 	}
 
 	AVLTree::AVLTree(const AVLTree& other) { 
-		*this = other;
+		
+		if (other.top_ == nullptr) { // bad option
+			top_ = nullptr;
+			return;
+		}
+
+		try {
+
+		    Node* side = nullptr; // How do poison like 0x00000001? 
+			Node* iter = other.top_;
+
+			Node* iter_new = new Node { iter->key_, nullptr, nullptr, nullptr, iter->left_size_ };
+			top_ = iter_new;
+
+			while (side != other.top_) { // If, for example, we want do there side != nullptr
+									 	 // And we want compare side with 100% invalid ptr [so first compare will always true]
+				if (side == iter->right_) {
+					side = iter;
+					iter = iter->parent_;
+					iter_new = iter_new->parent_;
+					continue;
+				}
+				if (iter->left_ != nullptr && iter->left_ != side) {
+					iter = iter->left_;
+					iter_new->left_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+					iter_new = iter_new->left_;
+					continue;
+				}
+				if (iter->left_ == nullptr) {
+				
+					if (iter->right_ != nullptr) {
+						iter = iter->right_;
+						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+						iter_new = iter_new->right_;
+						continue;
+					}
+					side = iter;
+					iter = iter->parent_;
+					iter_new = iter_new->parent_;
+					continue;
+				}
+				if (side == iter->left_) {
+					
+					if (iter->right_ != nullptr) {
+						iter = iter->right_;
+						iter_new->right_ = new Node {iter->key_, nullptr, nullptr, iter_new, iter->left_size_ };
+						iter_new = iter_new->right_;
+						continue;
+					}
+					else {
+						side = iter;
+						iter = iter->parent_;
+						iter_new = iter_new->parent_;
+						continue;
+					}
+				}
+			}
+		}
+		catch (std::bad_alloc) {
+
+			delete_subtree(top_); // But we have bad_alloc, how we get stack?
+			top_ = nullptr; // Or compiler optimize this?
+
+			// Why not? We have tree in a consistent state but when bad_alloc throw out - dtor don't call -
+			// - but we want do this. Of course i can do function like "delete a subtree" and call it there
+			// but i think it is the same
+			// And - we don't want have function like "delete a subtree" because it kill our invariants
+			throw;
+		}
+
+	}
+
+	AVLTree& AVLTree::operator= (const AVLTree& other) {
+
+	    if (this == &other) return *this;
+
+	    AVLTree tmp(other);
+
+	    std::swap(tmp, *this);
+
+	    return *this;
 	}
 
 	AVLTree::AVLTree(AVLTree&& tmp) {
