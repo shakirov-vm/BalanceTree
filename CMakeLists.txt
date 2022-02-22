@@ -4,7 +4,7 @@ set (PROJECT BalancedTree)
 
 project(${PROJECT})
 
-add_executable(BalancedTree source/main.cpp source/tree/dump.cpp source/tree/tree.cpp)
+add_executable(BalancedTree source/main.cpp)
 
 enable_testing()
 

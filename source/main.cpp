@@ -9,6 +9,30 @@ bool E2ETest(std::string& input, std::string& answer);
 
 int main(int argc, char** argv) {
 
+/*
+	avl_tree::AVLTree<int> our_tree(4);
+	
+	our_tree.insert(2);
+	our_tree.insert(1);
+	our_tree.insert(15);
+	our_tree.insert(8);
+	our_tree.insert(12);
+	our_tree.insert(3);
+	our_tree.insert(6);
+	our_tree.insert(14);
+	our_tree.insert(5);
+	our_tree.insert(7);
+std::cout << "Before copy" << std::endl;
+	avl_tree::AVLTree<int> copy_tree(our_tree);
+
+std::cout << "Before operator" << std::endl;
+	avl_tree::AVLTree<int> operator_tree(5);
+	operator_tree = copy_tree;
+
+std::cout << "After operator" << std::endl;
+
+*/
+
 	if (argc == 2) {
 		std::string input = std::string(argv[1]);
 
@@ -33,7 +57,7 @@ bool YourTest(std::string& input) {
         
     std::ifstream input_potok(input);
 
-  	avl_tree::AVLTree test_tree;
+  	avl_tree::AVLTree<int> test_tree;
 
     if (input_potok.is_open()) {
 
@@ -71,7 +95,7 @@ bool E2ETest(std::string& input, std::string& answer) {
     std::ifstream input_potok(input);
     std::ifstream answer_potok(answer);
 
-	avl_tree::AVLTree test_tree;
+	avl_tree::AVLTree<int> test_tree;
 
     if (input_potok.is_open() && answer_potok.is_open()) {
 
