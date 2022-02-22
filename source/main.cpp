@@ -9,30 +9,6 @@ bool E2ETest(std::string& input, std::string& answer);
 
 int main(int argc, char** argv) {
 
-/*
-	avl_tree::AVLTree<int> our_tree(4);
-	
-	our_tree.insert(2);
-	our_tree.insert(1);
-	our_tree.insert(15);
-	our_tree.insert(8);
-	our_tree.insert(12);
-	our_tree.insert(3);
-	our_tree.insert(6);
-	our_tree.insert(14);
-	our_tree.insert(5);
-	our_tree.insert(7);
-std::cout << "Before copy" << std::endl;
-	avl_tree::AVLTree<int> copy_tree(our_tree);
-
-std::cout << "Before operator" << std::endl;
-	avl_tree::AVLTree<int> operator_tree(5);
-	operator_tree = copy_tree;
-
-std::cout << "After operator" << std::endl;
-
-*/
-
 	if (argc == 2) {
 		std::string input = std::string(argv[1]);
 
@@ -62,25 +38,40 @@ bool YourTest(std::string& input) {
     if (input_potok.is_open()) {
 
     	std::string action;
-    	size_t num;
-    	size_t result;
+    	int num; // We wait int
+    	int result;
 
     	while (!input_potok.eof()) {
 
     		input_potok >> action >> num;
 
-    		if (action == "k") test_tree.insert(num);
-    		if (action == "m") {
-    			result = test_tree.find_k_ordinal_stat(num);
-    			if (result == 0xDEADBEEF) std::cout << "we haven't " << num << " elements in thee" << std::endl;
-    			else std::cout << num << " ordinal statistics is " << result << std::endl;
-    		}
-    		if (action == "n") { 
-    			result = test_tree.find_num_less_that_k(num);
-    			std::cout << "less than " << num << " element is " << result << std::endl;
-    		}
+    		try {
+	    	
+	    		if (action == "k") test_tree.insert(num);
+	    		if (action == "m") {
+	    			result = test_tree.find_k_ordinal_stat(num);
+	    			if (result == 0xDEADBEEF) std::cout << "we haven't " << num << " elements in thee" << std::endl;
+	    			else std::cout << num << " ordinal statistics is " << result << std::endl;
+	    		}
+	    		if (action == "n") { 
+	    			result = test_tree.find_num_less_that_k(num);
+	    			std::cout << "less than " << num << " element is " << result << std::endl;
+	    		}
+	    	}
+	    	catch (std::domain_error) {
+	    		std::cout << "That key is already in the tree: " << num << std::endl;
+	    	}
+	    	catch (std::underflow_error) {
+	    		std::cout << "Tree is empty" << std::endl;
+	    	}
+	    	catch (std::out_of_range) {
+	    		std::cout << "Tree contains fewer elements than " << num << std::endl;
+	    	}
+	    	catch (std::bad_alloc) {
+	    		std::cout << "Bad allocate memory" << std::endl;
+	    		throw; // This is fatal i think
+	    	}
     	}
-    	test_tree.dump();
 
     	input_potok.close();
         return true;

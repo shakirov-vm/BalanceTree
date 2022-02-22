@@ -52,7 +52,7 @@ namespace avl_tree {
 	template <typename key_t = int>	
 	class AVLTree {
 		
-		Node<key_t>* top_;
+		Node<key_t>* top_ = nullptr;
 
 	private:
 
@@ -61,7 +61,7 @@ namespace avl_tree {
 
 	public:
 
-		AVLTree() : top_(nullptr) {}
+		AVLTree() {}
 		AVLTree(key_t key) {
 			top_ = new Node<key_t>(key);
 		}
@@ -186,12 +186,8 @@ namespace avl_tree {
 		catch (std::bad_alloc) {
 
 			delete_subtree(top_); // But we have bad_alloc, how we get stack?
-			top_ = nullptr; // Or compiler optimize this?
+			top_ = nullptr; 	  // Or compiler optimize this?
 
-			// Why not? We have tree in a consistent state but when bad_alloc throw out - dtor don't call -
-			// - but we want do this. Of course i can do function like "delete a subtree" and call it there
-			// but i think it is the same
-			// And - we don't want have function like "delete a subtree" because it kill our invariants
 			throw;
 		}
 
@@ -239,7 +235,7 @@ namespace avl_tree {
 				iter = iter->left_;
 			}
 			else if (iter->key_ == key) {
-				std::cout << "That key - " << key << " is in tree!" << std::endl;
+				//std::cout << "That key - " << key << " is in tree!" << std::endl;
 				throw std::domain_error("That key is already in the tree\n");
 			}
 			else {
@@ -277,8 +273,6 @@ namespace avl_tree {
 		while (top_->parent_ != nullptr) {
 			top_ = top_->parent_;
 		}
-
-
 	}
 
 	template <typename key_t>
@@ -303,12 +297,15 @@ namespace avl_tree {
 				return iter->key_;
 			}
 			if (on_the_left < k - 1) {
-				if (iter->right_ == nullptr) break;
+
+				if (iter->right_ == nullptr) {
+					throw std::out_of_range("Tree contains fewer elements than k\n");
+				}
+
 				iter = iter->right_;
 				on_the_left += iter->left_size_ + 1;
 			}
 		}
-		throw std::out_of_range("Tree contains fewer elements than k\n");
 	}
 
 
