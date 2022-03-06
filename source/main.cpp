@@ -6,6 +6,7 @@
 
 bool YourTest(std::string& input);
 bool E2ETest(std::string& input, std::string& answer);
+bool ConsoleVariant();
 
 int main(int argc, char** argv) {
 
@@ -27,6 +28,60 @@ int main(int argc, char** argv) {
 		if (DEBUG) printf("Failed Test\n");
 		return 1;
 	}
+	if (argc == 1) {
+		if (ConsoleVariant()) return 0;
+		return 1;
+	}
+	else {
+		std::cout << "Invalid num of args" << std::endl;
+	}
+}
+bool ConsoleVariant() {
+
+  	avl_tree::AVLTree<int> test_tree;
+
+	std::string action;
+	int num; // We wait int
+	int result;
+
+	while(1) {
+
+		std::cin >> action;
+    	if (action == "e") break;
+		
+		std::cin >> num;
+
+		try {
+    		
+    		if (action == "k") { test_tree.insert(num);
+				std::cout << "insert key " << num << std::endl;
+    		
+    		}
+    		if (action == "m") {
+    			result = test_tree.find_k_ordinal_stat(num);
+    			std::cout << num << " ordinal statistics is " << result << std::endl;
+    		}
+    		if (action == "n") { 
+    			result = test_tree.find_num_less_that_k(num);
+    			std::cout << "less than " << num << " element is " << result << std::endl;
+    		}
+    	}
+    	catch (std::domain_error) {
+    		std::cout << "That key is already in the tree: " << num << std::endl;
+    	}
+    	catch (std::underflow_error) {
+    		std::cout << "Tree is empty" << std::endl;
+    	}
+    	catch (std::out_of_range) {
+    		std::cout << "Tree contains fewer elements than " << num << std::endl;
+    	}
+    	catch (std::bad_alloc) {
+    		std::cout << "Bad allocate memory" << std::endl;
+    		throw; // This is fatal i think
+    	}
+	}
+
+    return true;
 }
 
 bool YourTest(std::string& input) { 
@@ -41,17 +96,21 @@ bool YourTest(std::string& input) {
     	int num; // We wait int
     	int result;
 
-    	while (!input_potok.eof()) {
+    	while (1) {
 
     		input_potok >> action >> num;
 
+    		if (input_potok.eof()) break; // otherwise, the last command is executed twice
+
     		try {
 	    	
-	    		if (action == "k") test_tree.insert(num);
+	    		if (action == "k") {	
+	    			std::cout << num << " inserted" << std::endl;
+	    			test_tree.insert(num);
+	    		}
 	    		if (action == "m") {
 	    			result = test_tree.find_k_ordinal_stat(num);
-	    			if (result == 0xDEADBEEF) std::cout << "we haven't " << num << " elements in thee" << std::endl;
-	    			else std::cout << num << " ordinal statistics is " << result << std::endl;
+	    			std::cout << num << " ordinal statistics is " << result << std::endl;
 	    		}
 	    		if (action == "n") { 
 	    			result = test_tree.find_num_less_that_k(num);

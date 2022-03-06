@@ -51,7 +51,7 @@ namespace avl_tree {
 
 	template <typename key_t = int>	
 	class AVLTree {
-		
+	
 		Node<key_t>* top_ = nullptr;
 
 	private:
@@ -64,6 +64,7 @@ namespace avl_tree {
 		AVLTree() {}
 		AVLTree(key_t key) {
 			top_ = new Node<key_t>(key);
+
 		}
 		AVLTree(const AVLTree& other);
 		AVLTree(AVLTree&& tmp);
@@ -75,6 +76,10 @@ namespace avl_tree {
 		key_t find_k_ordinal_stat(size_t k) const;
 		size_t find_num_less_that_k(size_t k) const;
 		void dump();
+
+#ifdef U_TEST 
+		Node<key_t>* get_top() { return top_; }
+#endif
 
 	};
 
@@ -183,7 +188,7 @@ namespace avl_tree {
 				}
 			}
 		}
-		catch (std::bad_alloc) {
+		catch (...) {
 
 			delete_subtree(top_); // But we have bad_alloc, how we get stack?
 			top_ = nullptr; 	  // Or compiler optimize this?
@@ -207,6 +212,7 @@ namespace avl_tree {
 
 	template <typename key_t>
 	AVLTree<key_t>::AVLTree(AVLTree<key_t>&& tmp) {
+
 	    std::swap(top_, tmp.top_);
 	}
 
